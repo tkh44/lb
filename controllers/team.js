@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var api = require('express-api-helper');
 var mongoose = require('mongoose');
+var ObjectId = mongoose.Types.ObjectId;
 var Team = require('../models/Team');
 
 exports.team = function(req, res, next, id) {
@@ -13,7 +14,7 @@ exports.team = function(req, res, next, id) {
 };
 
 exports.all = function(req, res) {
-	Team.find({}, function(err, teams) {
+	Team.find().populate('players').exec(function(err, teams) {
 		if (err) return api.serverError(req, res, err);
 		api.ok(req, res, teams);
 	});
@@ -60,12 +61,23 @@ exports.destroy = function(req, res) {
 
 exports.addPlayer = function(req, res) {
 	var team = req.team;
-	var playerId = req.body._id;
+	var playerId = req.params.teamPlayerId;
 
 	team.players.push(playerId);
 	team.save(function(err) {
 		if (err) api.serverError(req, res, err);
-		api.ok(req.res, team);
+		res.sendStatus(204);
 	})
 };
 
+exports.destroyPlayer = function(req, res) {
+	var team = req.team;
+	var playerId = req.params.teamPlayerId;
+
+	team.players.pull({'_id': new ObjectId(playerId)});
+
+	team.save(function(err) {
+		if (err) api.serverError(req, res, err);
+		res.sendStatus(204);
+	});
+};

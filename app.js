@@ -140,23 +140,26 @@ var teamController = require('./controllers/team');
 var playerController = require('./controllers/player');
 
 app.get('/api/v1/leagues', leagueController.all)
-	.post('/api/v1/leagues', leagueController.create)
-	.get('/api/v1/leagues/:leagueId', leagueController.get)
-	.put('/api/v1/leagues/:leagueId', leagueController.update)
-	.delete('/api/v1/leagues/:leagueId', leagueController.destroy);
+  .post('/api/v1/leagues', leagueController.create)
+  .get('/api/v1/leagues/:leagueId', leagueController.get)
+  .put('/api/v1/leagues/:leagueId', leagueController.update)
+  .delete('/api/v1/leagues/:leagueId', leagueController.destroy)
+	.put('/api/v1/leagues/:leagueId/teams/:leagueTeamId', leagueController.addTeam)
+	.delete('/api/v1/leagues/:leagueId/teams/:leagueTeamId', leagueController.destroyTeam);
 
 app.get('/api/v1/teams', teamController.all)
-	.post('/api/v1/teams', teamController.create)
-	.get('/api/v1/teams/:teamId', teamController.get)
-	.put('/api/v1/teams/:teamId', teamController.update)
-	.delete('/api/v1/teams/:teamId', teamController.destroy)
-	.post('/api/v1/teams/:teamId/addPlayer', teamController.addPlayer);
+  .post('/api/v1/teams', teamController.create)
+  .get('/api/v1/teams/:teamId', teamController.get)
+  .put('/api/v1/teams/:teamId', teamController.update)
+  .delete('/api/v1/teams/:teamId', teamController.destroy)
+  .put('/api/v1/teams/:teamId/players/:teamPlayerId', teamController.addPlayer)
+  .delete('/api/v1/teams/:teamId/players/:teamPlayerId', teamController.destroyPlayer);
 
 app.get('/api/v1/players', playerController.all)
-	.post('/api/v1/players', playerController.create)
-	.get('/api/v1/players/:playerId', playerController.get)
-	.put('/api/v1/players/:playerId', playerController.update)
-	.delete('/api/v1/players/:playerId', playerController.destroy);
+  .post('/api/v1/players', playerController.create)
+  .get('/api/v1/players/:playerId', playerController.get)
+  .put('/api/v1/players/:playerId', playerController.update)
+  .delete('/api/v1/players/:playerId', playerController.destroy);
 
 app.param('leagueId', leagueController.league);
 app.param('teamId', teamController.team);

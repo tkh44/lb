@@ -13,7 +13,7 @@ exports.league = function(req, res, next, id) {
 };
 
 exports.all = function(req, res) {
-	League.find({}, function(err, leagues) {
+	League.find({}).populate('players').exec(function(err, leagues) {
 		if (err) return api.serverError(req, res, err);
 		api.ok(req, res, leagues);
 	});
@@ -54,6 +54,29 @@ exports.destroy = function(req, res) {
 
 	league.remove(function(err) {
 		if (err) return api.serverError(req, res, err);
+		res.sendStatus(204);
+	});
+};
+
+exports.addTeam = function(req, res) {
+	var league = req.league;
+	var teamId = req.params.leagueTeamId;
+
+	league.teams.push(teamId);
+	league.save(function(err) {
+		if (err) api.serverError(req, res, err);
+		res.sendStatus(204);
+	})
+};
+
+exports.destroyTeam = function(req, res) {
+	var league = req.league;
+	var teamId = req.params.leagueTeamId;
+
+	league.teams = _.reject(league.teams, {'_id': teamId});
+
+	league.save(function(err) {
+		if (err) api.serverError(req, res, err);
 		res.sendStatus(204);
 	});
 };
