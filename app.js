@@ -136,6 +136,8 @@ app.post('/account/delete', passportConf.isAuthenticated, userController.postDel
 app.get('/account/unlink/:provider', passportConf.isAuthenticated, userController.getOauthUnlink);
 
 var leagueController = require('./controllers/league');
+var teamController = require('./controllers/team');
+var playerController = require('./controllers/player');
 
 app.get('/api/v1/leagues', leagueController.all)
 	.post('/api/v1/leagues', leagueController.create)
@@ -143,27 +145,24 @@ app.get('/api/v1/leagues', leagueController.all)
 	.put('/api/v1/leagues/:leagueId', leagueController.update)
 	.delete('/api/v1/leagues/:leagueId', leagueController.destroy);
 
-app.param('leagueId', leagueController.league);
-
-var teamController = require('./controllers/team');
-
 app.get('/api/v1/teams', teamController.all)
-.post('/api/v1/teams', teamController.create)
-.get('/api/v1/teams/:teamId', teamController.get)
-.put('/api/v1/teams/:teamId', teamController.update)
-.delete('/api/v1/teams/:teamId', teamController.destroy);
-
-app.param('teamId', teamController.team);
-
-var playerController = require('./controllers/player');
+	.post('/api/v1/teams', teamController.create)
+	.get('/api/v1/teams/:teamId', teamController.get)
+	.put('/api/v1/teams/:teamId', teamController.update)
+	.delete('/api/v1/teams/:teamId', teamController.destroy)
+	.post('/api/v1/teams/:teamId/addPlayer', teamController.addPlayer);
 
 app.get('/api/v1/players', playerController.all)
-.post('/api/v1/players', playerController.create)
-.get('/api/v1/players/:playerId', playerController.get)
-.put('/api/v1/players/:playerId', playerController.update)
-.delete('/api/v1/players/:playerId', playerController.destroy);
+	.post('/api/v1/players', playerController.create)
+	.get('/api/v1/players/:playerId', playerController.get)
+	.put('/api/v1/players/:playerId', playerController.update)
+	.delete('/api/v1/players/:playerId', playerController.destroy);
 
+app.param('leagueId', leagueController.league);
+app.param('teamId', teamController.team);
 app.param('playerId', playerController.player);
+
+
 
 
 /**

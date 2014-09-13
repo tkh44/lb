@@ -58,3 +58,14 @@ exports.destroy = function(req, res) {
 	});
 };
 
+exports.addPlayer = function(req, res) {
+	var team = req.team;
+	var playerId = req.body._id;
+
+	team.players.push(playerId);
+	team.save(function(err) {
+		if (err) api.serverError(req, res, err);
+		api.ok(req.res, team);
+	})
+};
+

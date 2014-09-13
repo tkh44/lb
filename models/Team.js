@@ -1,6 +1,8 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+	Schema = mongoose.Schema,
+	PlayerSchema  = require('./Player');
 
-var teamSchema = new mongoose.Schema({
+var teamSchema = new Schema({
 	name: String,
 	created: {
 		type: Date,
@@ -9,7 +11,17 @@ var teamSchema = new mongoose.Schema({
 	updated: {
 		type: Date,
 		default: Date.now()
-	}
+	},
+	manager: {
+		type: Schema.ObjectId,
+		ref: 'User'
+	},
+	players: [
+		{
+			type: Schema.ObjectId,
+			ref: 'Player'
+		}
+	]
 });
 
 /**
@@ -24,7 +36,7 @@ teamSchema.pre('save', function(next) {
 teamSchema.statics.load = function(id, cb) {
 	this.findOne({
 		_id: id
-	}).exec(cb);
+	}).populate('manager players').exec(cb);
 };
 
 
