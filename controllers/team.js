@@ -14,7 +14,7 @@ exports.team = function(req, res, next, id) {
 };
 
 exports.all = function(req, res) {
-	Team.find().populate('players').exec(function(err, teams) {
+	Team.find().populate('manager players').exec(function(err, teams) {
 		if (err) return api.serverError(req, res, err);
 		api.ok(req, res, teams);
 	});
@@ -24,7 +24,8 @@ exports.create = function(req, res) {
 	api.requireParams(req, res, ['name'], function(err) {
 		if (err) return api.serverError(req, res, err);
 		var team = {
-			name: req.body.name
+			name: req.body.name,
+			manager: req.user
 		};
 
 		Team.create(team, function(err, team) {

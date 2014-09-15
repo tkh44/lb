@@ -139,108 +139,40 @@ var leagueController = require('./controllers/league');
 var teamController = require('./controllers/team');
 var playerController = require('./controllers/player');
 
-app.get('/api/v1/leagues', leagueController.all)
-  .post('/api/v1/leagues', leagueController.create)
-  .get('/api/v1/leagues/:leagueId', leagueController.get)
-  .put('/api/v1/leagues/:leagueId', leagueController.update)
-  .delete('/api/v1/leagues/:leagueId', leagueController.destroy)
-	.put('/api/v1/leagues/:leagueId/teams/:leagueTeamId', leagueController.addTeam)
-	.delete('/api/v1/leagues/:leagueId/teams/:leagueTeamId', leagueController.destroyTeam);
+app.route('/api/v1/leagues')
+	.get(passportConf.isRestAuthenticated, leagueController.all)
+	.post(passportConf.isRestAuthenticated, leagueController.create);
+app.route('/api/v1/leagues/:leagueId')
+	.get(passportConf.isRestAuthenticated, leagueController.get)
+	.put(passportConf.isRestAuthenticated, leagueController.update)
+	.delete(passportConf.isRestAuthenticated, leagueController.destroy);
+app.route('/api/v1/leagues/:leagueId/teams/:leagueTeamId')
+	.put(passportConf.isRestAuthenticated, leagueController.addTeam)
+	.delete(passportConf.isRestAuthenticated, leagueController.destroyTeam);
 
-app.get('/api/v1/teams', teamController.all)
-  .post('/api/v1/teams', teamController.create)
-  .get('/api/v1/teams/:teamId', teamController.get)
-  .put('/api/v1/teams/:teamId', teamController.update)
-  .delete('/api/v1/teams/:teamId', teamController.destroy)
-  .put('/api/v1/teams/:teamId/players/:teamPlayerId', teamController.addPlayer)
-  .delete('/api/v1/teams/:teamId/players/:teamPlayerId', teamController.destroyPlayer);
+app.route('/api/v1/teams')
+	.get(passportConf.isRestAuthenticated, teamController.all)
+  .post(passportConf.isRestAuthenticated, teamController.create);
+app.route('/api/v1/teams/:teamId')
+  .get(passportConf.isRestAuthenticated, teamController.get)
+  .put(passportConf.isRestAuthenticated, teamController.update)
+  .delete(passportConf.isRestAuthenticated, teamController.destroy);
+app.route('/api/v1/teams/:teamId/players/:teamPlayerId')
+  .put(passportConf.isRestAuthenticated, teamController.addPlayer)
+  .delete(passportConf.isRestAuthenticated, teamController.destroyPlayer);
 
-app.get('/api/v1/players', playerController.all)
-  .post('/api/v1/players', playerController.create)
-  .get('/api/v1/players/:playerId', playerController.get)
-  .put('/api/v1/players/:playerId', playerController.update)
-  .delete('/api/v1/players/:playerId', playerController.destroy);
+app.route('/api/v1/players')
+	.get(passportConf.isRestAuthenticated, playerController.all)
+  .post(passportConf.isRestAuthenticated, playerController.create)
+app.route('/api/v1/players/:playerId')
+	.get(passportConf.isRestAuthenticated, playerController.get)
+  .put(passportConf.isRestAuthenticated, playerController.update)
+  .delete(passportConf.isRestAuthenticated, playerController.destroy);
 
 app.param('leagueId', leagueController.league);
 app.param('teamId', teamController.team);
 app.param('playerId', playerController.player);
 
-
-
-
-/**
- * API examples routes.
- */
-
-app.get('/api', apiController.getApi);
-app.get('/api/lastfm', apiController.getLastfm);
-app.get('/api/nyt', apiController.getNewYorkTimes);
-app.get('/api/aviary', apiController.getAviary);
-app.get('/api/steam', apiController.getSteam);
-app.get('/api/stripe', apiController.getStripe);
-app.post('/api/stripe', apiController.postStripe);
-app.get('/api/scraping', apiController.getScraping);
-app.get('/api/twilio', apiController.getTwilio);
-app.post('/api/twilio', apiController.postTwilio);
-app.get('/api/clockwork', apiController.getClockwork);
-app.post('/api/clockwork', apiController.postClockwork);
-app.get('/api/foursquare', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getFoursquare);
-app.get('/api/tumblr', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getTumblr);
-app.get('/api/facebook', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getFacebook);
-app.get('/api/github', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getGithub);
-app.get('/api/twitter', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getTwitter);
-app.post('/api/twitter', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.postTwitter);
-app.get('/api/venmo', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getVenmo);
-app.post('/api/venmo', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.postVenmo);
-app.get('/api/linkedin', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getLinkedin);
-app.get('/api/instagram', passportConf.isAuthenticated, passportConf.isAuthorized, apiController.getInstagram);
-app.get('/api/yahoo', apiController.getYahoo);
-
-/**
- * OAuth sign-in routes.
- */
-
-app.get('/auth/instagram', passport.authenticate('instagram'));
-app.get('/auth/instagram/callback', passport.authenticate('instagram', { failureRedirect: '/login' }), function(req, res) {
-  res.redirect(req.session.returnTo || '/');
-});
-app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'user_location'] }));
-app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), function(req, res) {
-  res.redirect(req.session.returnTo || '/');
-});
-app.get('/auth/github', passport.authenticate('github'));
-app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), function(req, res) {
-  res.redirect(req.session.returnTo || '/');
-});
-app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
-app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), function(req, res) {
-  res.redirect(req.session.returnTo || '/');
-});
-app.get('/auth/twitter', passport.authenticate('twitter'));
-app.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/login' }), function(req, res) {
-  res.redirect(req.session.returnTo || '/');
-});
-app.get('/auth/linkedin', passport.authenticate('linkedin', { state: 'SOME STATE' }));
-app.get('/auth/linkedin/callback', passport.authenticate('linkedin', { failureRedirect: '/login' }), function(req, res) {
-  res.redirect(req.session.returnTo || '/');
-});
-
-/**
- * OAuth authorization routes for API examples.
- */
-
-app.get('/auth/foursquare', passport.authorize('foursquare'));
-app.get('/auth/foursquare/callback', passport.authorize('foursquare', { failureRedirect: '/api' }), function(req, res) {
-  res.redirect('/api/foursquare');
-});
-app.get('/auth/tumblr', passport.authorize('tumblr'));
-app.get('/auth/tumblr/callback', passport.authorize('tumblr', { failureRedirect: '/api' }), function(req, res) {
-  res.redirect('/api/tumblr');
-});
-app.get('/auth/venmo', passport.authorize('venmo', { scope: 'make_payments access_profile access_balance access_email access_phone' }));
-app.get('/auth/venmo/callback', passport.authorize('venmo', { failureRedirect: '/api' }), function(req, res) {
-  res.redirect('/api/venmo');
-});
 
 /**
  * 500 Error Handler.
