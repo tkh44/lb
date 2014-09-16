@@ -24,6 +24,13 @@
           li(class=title=='Create Account'?'active':undefined)
             a(href='/signup') Create Account
         else
+          if(leagues)
+              li.dropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown')
+                    Leagues
+                ul.dropdown-menu
+                    each league in leagues
+                        li=league.name
           li.dropdown(class=title=='Account Management'?'active':undefined)
             a.dropdown-toggle(href='#', data-toggle='dropdown')
               if user.profile.picture
