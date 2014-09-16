@@ -23,7 +23,8 @@ exports.create = function(req, res) {
 	api.requireParams(req, res, ['name'], function(err) {
 		if (err) return api.serverError(req, res, err);
 		var player = {
-			name: req.body.name
+			name: req.body.name,
+			user: req.body.user || req.user
 		};
 
 		Player.create(player, function(err, player) {
@@ -41,6 +42,7 @@ exports.get = function(req, res) {
 
 exports.update = function(req, res) {
 	var player = req.player;
+
 	player = _.assign(player, req.body);
 
 	player.save(function(err) {
