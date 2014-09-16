@@ -39,5 +39,9 @@ teamSchema.statics.load = function(id, cb) {
 	}).populate('manager players').exec(cb);
 };
 
+teamSchema.statics.getByManager = function(userId, cb) {
+	this.find({manager: userId}).exec(cb);
+};
+
 
 module.exports = mongoose.model('Team', teamSchema);

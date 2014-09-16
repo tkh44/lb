@@ -1,7 +1,12 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+	ObjectId = mongoose.Types.ObjectId;
 
 var playerSchema = new mongoose.Schema({
 	name: String,
+	user: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'User'
+	},
 	created: {
 		type: Date,
 		default: Date.now()
@@ -27,5 +32,8 @@ playerSchema.statics.load = function(id, cb) {
 	}).exec(cb);
 };
 
+playerSchema.statics.getByUser = function(userId, cb) {
+	this.find({user: userId}).exec(cb);
+};
 
 module.exports = mongoose.model('Player', playerSchema);

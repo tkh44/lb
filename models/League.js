@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
+	ObjectId = mongoose.Types.ObjectId,
 	moment = require('moment');
 
 var leagueSchema = new mongoose.Schema({
@@ -32,6 +33,10 @@ leagueSchema.statics.load = function(id, cb) {
 	this.findOne({
 		_id: id
 	}).populate('manager teams').exec(cb);
+};
+
+leagueSchema.statics.getByManager = function(userId, cb) {
+	this.find({manager: userId}).exec(cb);
 };
 
 
