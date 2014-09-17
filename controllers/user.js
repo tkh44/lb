@@ -3,6 +3,7 @@ var async = require('async');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 var passport = require('passport');
+var api = require('express-api-helper');
 var User = require('../models/User');
 var secrets = require('../config/secrets');
 
@@ -10,6 +11,15 @@ var secrets = require('../config/secrets');
  * GET /login
  * Login page.
  */
+
+exports.user = function(id, next) {
+	User.load(id, function(err, user) {
+		if (err) return api.serverError(req, res, err);
+		if (!user) return api.notFound(req, res);
+		req.requestedUser = user;
+		next();
+	});
+};
 
 exports.getLogin = function(req, res) {
   if (req.user) return res.redirect('/');
@@ -377,4 +387,51 @@ exports.postForgot = function(req, res, next) {
     if (err) return next(err);
     res.redirect('/forgot');
   });
+};
+
+/** REST api controllers */
+
+/**
+ * GET /me
+ */
+
+exports.me = function(req, res) {
+	api.ok(req, res, req.user);
+};
+
+exports.all = function(req, res) {
+	User
+		.find()
+		.exec(function(err, users) {
+			if (err) return api.serverError(req, res, err);
+			api.ok(req, res, users);
+		});
+};
+
+exports.create = function(req, res) {
+	req.assert('email', 'Email is not valid').isEmail();
+	req.assert('password', 'Password must be at least 4 characters long').len(4);
+	req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
+
+	var errors = req.validationErrors();
+
+	if (errors) return api.badRequest(req, res, errors);
+
+	var user = new User({
+		email: req.body.email,
+		password: req.body.password
+	});
+
+	User.findOne({ email: req.body.email }, function(err, existingUser) {
+		if (existingUser) api.badRequest(req, res, ['Email is already taken']);
+		user.save(function(err) {
+			if (err) api.serverError(req, res, err);
+			res.status(201).json(user);
+		});
+	});
+};
+
+exports.get = function(req, res) {
+	var user = req.requestedUser;
+	api.ok(req, res, user);
 };

@@ -15,11 +15,23 @@ var userSchema = new mongoose.Schema({
   tokens: Array,
 
   profile: {
-    name: { type: String, default: '' },
+    name: {
+	    title: {type: String, default: ''},
+	    first: {type: String, default: ''},
+	    last: {type: String, default: ''}
+    },
+    location: {
+	    street: {type: String, default: ''},
+	    city: {type: String, default: ''},
+	    state: {type: String, default: ''},
+	    zip: {type: String, default: ''}
+    },
     gender: { type: String, default: '' },
-    location: { type: String, default: '' },
-    website: { type: String, default: '' },
-    picture: { type: String, default: '' }
+    picture: {
+	    large: { type: String, default: '' },
+	    medium: { type: String, default: '' },
+	    thumbnail: { type: String, default: '' }
+    }
   },
 
   resetPasswordToken: String,
@@ -73,6 +85,12 @@ userSchema.methods.gravatar = function(size) {
 
   var md5 = crypto.createHash('md5').update(this.email).digest('hex');
   return 'https://gravatar.com/avatar/' + md5 + '?s=' + size + '&d=retro';
+};
+
+userSchema.statics.load = function(id, cb) {
+	this.findOne({
+		_id: id
+	}).exec(cb);
 };
 
 module.exports = mongoose.model('User', userSchema);
