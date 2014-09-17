@@ -136,39 +136,54 @@ app.post('/account/password', passportConf.isAuthenticated, userController.postU
 app.post('/account/delete', passportConf.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConf.isAuthenticated, userController.getOauthUnlink);
 
+
+app.use('/api', passportConf.isRestAuthenticated);
+
+app.route('/api/v1/users/me')
+	.get(userController.me);
+app.route('/api/v1/users')
+	.get(userController.all)
+	.post(userController.create);
+app.route('/api/v1/users/:userId')
+	.get(userController.get)
+//	.put(userController.update)
+// .delete(userController.destroy)
+
 var leagueController = require('./controllers/league');
-var teamController = require('./controllers/team');
-var playerController = require('./controllers/player');
 
 app.route('/api/v1/leagues')
-	.get(passportConf.isRestAuthenticated, leagueController.all)
-	.post(passportConf.isRestAuthenticated, leagueController.create);
+	.get(leagueController.all)
+	.post(leagueController.create);
 app.route('/api/v1/leagues/:leagueId')
-	.get(passportConf.isRestAuthenticated, leagueController.get)
-	.put(passportConf.isRestAuthenticated, leagueController.update)
-	.delete(passportConf.isRestAuthenticated, leagueController.destroy);
+	.get(leagueController.get)
+	.put(leagueController.update)
+	.delete(leagueController.destroy);
 app.route('/api/v1/leagues/:leagueId/teams/:leagueTeamId')
-	.put(passportConf.isRestAuthenticated, leagueController.addTeam)
-	.delete(passportConf.isRestAuthenticated, leagueController.destroyTeam);
+	.put(leagueController.addTeam)
+	.delete(leagueController.destroyTeam);
+
+var teamController = require('./controllers/team');
 
 app.route('/api/v1/teams')
-	.get(passportConf.isRestAuthenticated, teamController.all)
-  .post(passportConf.isRestAuthenticated, teamController.create);
+	.get(teamController.all)
+  .post(teamController.create);
 app.route('/api/v1/teams/:teamId')
-  .get(passportConf.isRestAuthenticated, teamController.get)
-  .put(passportConf.isRestAuthenticated, teamController.update)
-  .delete(passportConf.isRestAuthenticated, teamController.destroy);
+  .get(teamController.get)
+  .put(teamController.update)
+  .delete(teamController.destroy);
 app.route('/api/v1/teams/:teamId/players/:teamPlayerId')
-  .put(passportConf.isRestAuthenticated, teamController.addPlayer)
-  .delete(passportConf.isRestAuthenticated, teamController.destroyPlayer);
+  .put(teamController.addPlayer)
+  .delete(teamController.destroyPlayer);
+
+var playerController = require('./controllers/player');
 
 app.route('/api/v1/players')
-	.get(passportConf.isRestAuthenticated, playerController.all)
-  .post(passportConf.isRestAuthenticated, playerController.create)
+	.get(playerController.all)
+  .post(playerController.create)
 app.route('/api/v1/players/:playerId')
-	.get(passportConf.isRestAuthenticated, playerController.get)
-  .put(passportConf.isRestAuthenticated, playerController.update)
-  .delete(passportConf.isRestAuthenticated, playerController.destroy);
+	.get(playerController.get)
+  .put(playerController.update)
+  .delete(playerController.destroy);
 
 app.param('leagueId', leagueController.league);
 app.param('teamId', teamController.team);
