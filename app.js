@@ -179,11 +179,24 @@ var playerController = require('./controllers/player');
 
 app.route('/api/v1/players')
 	.get(playerController.all)
-  .post(playerController.create)
+  .post(playerController.create);
 app.route('/api/v1/players/:playerId')
 	.get(playerController.get)
   .put(playerController.update)
   .delete(playerController.destroy);
+
+var gameController = require('./controllers/game');
+
+app.route('/api/v1/games')
+	.get(gameController.all)
+	.post(gameController.create)
+app.route('/api/v1/games/:gameId')
+	.get(gameController.get)
+	.put(gameController.update)
+	.delete(gameController.destroy);
+app.route('/api/v1/games/:gameId/teams/:teamId')
+	.put(teamController.addTeam)
+	.delete(teamController.destroyTeam);
 
 app.param('leagueId', leagueController.league);
 app.param('teamId', teamController.team);
