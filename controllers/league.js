@@ -33,6 +33,7 @@ exports.create = function(req, res) {
 
 		League.create(league, function(err, league) {
 			if (err) return api.serverError(req, res, err);
+			// TODO: Make these part of api-helper to respond 201 with data
 			api.ok(req, res, league);
 		});
 

@@ -147,7 +147,7 @@ app.route('/api/v1/users')
 app.route('/api/v1/users/:userId')
 	.get(userController.get)
 //	.put(userController.update)
-// .delete(userController.destroy)
+// .delete(userController.destroy);
 
 var leagueController = require('./controllers/league');
 
