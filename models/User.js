@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
 var crypto = require('crypto');
+var _ = require('lodash');
 
 var userSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true },
@@ -59,6 +60,10 @@ userSchema.pre('save', function(next) {
   });
 });
 
+userSchema.virtual('profile.name.full').get(function() {
+	return this.profile.name.first + ' ' + this.profile.name.last;
+});
+
 /**
  * Validate user's password.
  * Used by Passport-Local Strategy for password validation.
@@ -92,5 +97,11 @@ userSchema.statics.load = function(id, cb) {
 		_id: id
 	}).exec(cb);
 };
+
+userSchema.set('toJSON', {
+	transform: function(doc, user, options) {
+		return _.omit(user, ['password', 'tokens']);
+	}
+});
 
 module.exports = mongoose.model('User', userSchema);

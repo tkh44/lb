@@ -12,7 +12,7 @@ var secrets = require('../config/secrets');
  * Login page.
  */
 
-exports.user = function(id, next) {
+exports.user = function(req, res, next, id) {
 	User.load(id, function(err, user) {
 		if (err) return api.serverError(req, res, err);
 		if (!user) return api.notFound(req, res);
@@ -434,4 +434,18 @@ exports.create = function(req, res) {
 exports.get = function(req, res) {
 	var user = req.requestedUser;
 	api.ok(req, res, user);
+};
+
+exports.update = function(req, res) {
+	var user = req.requestedUser;
+	var assignDeep = _.partialRight(_.assign, function(value, other) {
+		return _.assign(value, other);
+	});
+
+	user = assignDeep(user, req.body);
+
+	user.save(function(err) {
+		if (err) api.serverError(req, res, err);
+		api.ok(req, res, user);
+	});
 };

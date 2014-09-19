@@ -33,10 +33,6 @@ gameSchema.pre('save', function(next) {
 	next();
 });
 
-gameSchema.schema.path('teams').validate(function(value) {
-	return value.length <= 2;
-}, 'Only 2 teams allowed');
-
 gameSchema.statics.load = function(id, cb) {
 	this.findOne({
 		_id: id
@@ -47,5 +43,10 @@ gameSchema.statics.getByLeague = function(leagueId, cb) {
 	this.find({league: leagueId}).exec(cb);
 };
 
+Game = mongoose.model('Game', gameSchema);
 
-module.exports = mongoose.model('Game', gameSchema);
+Game.schema.path('teams').validate(function(value) {
+	return value.length <= 2;
+}, 'Only 2 teams allowed');
+
+module.exports = Game;

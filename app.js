@@ -146,7 +146,7 @@ app.route('/api/v1/users')
 	.post(userController.create);
 app.route('/api/v1/users/:userId')
 	.get(userController.get)
-//	.put(userController.update)
+	.put(userController.update);
 // .delete(userController.destroy);
 
 var leagueController = require('./controllers/league');
@@ -195,9 +195,10 @@ app.route('/api/v1/games/:gameId')
 	.put(gameController.update)
 	.delete(gameController.destroy);
 app.route('/api/v1/games/:gameId/teams/:teamId')
-	.put(teamController.addTeam)
-	.delete(teamController.destroyTeam);
+	.put(gameController.addTeam)
+	.delete(gameController.destroyTeam);
 
+app.param('userId', userController.user);
 app.param('leagueId', leagueController.league);
 app.param('teamId', teamController.team);
 app.param('playerId', playerController.player);

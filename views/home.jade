@@ -2,7 +2,9 @@ extends layout
 
 block content
   if(user)
-    h1=user._id
+    h1 #{user.profile.name.full}
+    h1.info #{(user.email)}
+    h2=user._id
   p.lead A boilerplate for Node.js web applications.
   hr
   .row
