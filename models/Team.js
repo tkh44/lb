@@ -19,7 +19,7 @@ var teamSchema = new Schema({
 	players: [
 		{
 			type: Schema.ObjectId,
-			ref: 'Player'
+			ref: 'User'
 		}
 	]
 });
