@@ -71,10 +71,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.set('json spaces', 2);
 app.use(compress());
-app.use(connectAssets({
-  paths: [path.join(__dirname, 'public/css'), path.join(__dirname, 'public/js')],
-  helperContext: app.locals
-}));
+//app.use(connectAssets({
+//  paths: [path.join(__dirname, 'public/css'), path.join(__dirname, 'public/js')],
+//  helperContext: app.locals
+//}));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -93,16 +93,16 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.use(function(req, res, next) {
-  // CSRF protection.
-  if (_.contains(csrfExclude, req.path)|| ~req.path.search('/api/')) return next();
-  csrf(req, res, next);
-});
-app.use(function(req, res, next) {
-  // Make user object available in templates.
-  res.locals.user = req.user;
-  next();
-});
+//app.use(function(req, res, next) {
+//  // CSRF protection.
+//  if (_.contains(csrfExclude, req.path)|| ~req.path.search('/api/')) return next();
+//  csrf(req, res, next);
+//});
+//app.use(function(req, res, next) {
+//  // Make user object available in templates.
+//  res.locals.user = req.user;
+//  next();
+//});
 app.use(function(req, res, next) {
   // Remember original destination before login.
   var path = req.path.split('/')[1];
@@ -112,7 +112,7 @@ app.use(function(req, res, next) {
   req.session.returnTo = req.path;
   next();
 });
-app.use(express.static(path.join(__dirname, 'public'), { maxAge: week }));
+app.use('/dist', express.static('dist'));
 
 /**
  * Main routes.
@@ -128,8 +128,8 @@ app.get('/reset/:token', userController.getReset);
 app.post('/reset/:token', userController.postReset);
 app.get('/signup', userController.getSignup);
 app.post('/signup', userController.postSignup);
-app.get('/contact', contactController.getContact);
-app.post('/contact', contactController.postContact);
+//app.get('/contact', contactController.getContact);
+//app.post('/contact', contactController.postContact);
 app.get('/account', passportConf.isAuthenticated, userController.getAccount);
 app.post('/account/profile', passportConf.isAuthenticated, userController.postUpdateProfile);
 app.post('/account/password', passportConf.isAuthenticated, userController.postUpdatePassword);
