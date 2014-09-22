@@ -20,22 +20,24 @@ var getUserData = function(userId, cb) {
 };
 
 exports.index = function(req, res) {
-	var responseData = {
-		title: 'Home'
-	};
+	res.render('index');
 
-	if (req.user) {
-		getUserData(req.user.id, function(err, results) {
-			if (err) return err;
-			res.render('home', _.assign(responseData, {
-				leagues: results.leagues,
-				teams: results.teams,
-				players: results.players
-			}));
-		});
-	} else {
-		res.render('home', responseData);
-	}
+	//var responseData = {
+	//	title: 'Home'
+	//};
+	//
+	//if (req.user) {
+	//	getUserData(req.user.id, function(err, results) {
+	//		if (err) return err;
+	//		res.render('index', _.assign(responseData, {
+	//			leagues: results.leagues,
+	//			teams: results.teams,
+	//			players: results.players
+	//		}));
+	//	});
+	//} else {
+	//	res.render('index', responseData);
+	//}
 
 
 };

@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var assignDeep = require('../utils/assignDeep');
 var async = require('async');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
@@ -438,10 +439,6 @@ exports.get = function(req, res) {
 
 exports.update = function(req, res) {
 	var user = req.requestedUser;
-	var assignDeep = _.partialRight(_.assign, function(value, other) {
-		return _.assign(value, other);
-	});
-
 	user = assignDeep(user, req.body);
 
 	user.save(function(err) {

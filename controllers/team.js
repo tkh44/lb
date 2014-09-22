@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var assignDeep = require('../utils/assignDeep');
 var api = require('express-api-helper');
 var mongoose = require('mongoose');
 var ObjectId = mongoose.Types.ObjectId;
@@ -43,7 +44,7 @@ exports.get = function(req, res) {
 
 exports.update = function(req, res) {
 	var team = req.team;
-	team = _.assign(team, req.body);
+	team = assignDeep(team, req.body);
 
 	team.save(function(err) {
 		if (err) api.serverError(req, res, err);

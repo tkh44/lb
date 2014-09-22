@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var assignDeep = require('../utils/assignDeep');
 var api = require('express-api-helper');
 var mongoose = require('mongoose');
 var Player = require('../models/Player');
@@ -43,7 +44,7 @@ exports.get = function(req, res) {
 exports.update = function(req, res) {
 	var player = req.player;
 
-	player = _.assign(player, req.body);
+	player = assignDeep(player, req.body);
 
 	player.save(function(err) {
 		if (err) api.serverError(req, res, err);

@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var assignDeep = require('../utils/assignDeep');
 var api = require('express-api-helper');
 var mongoose = require('mongoose');
 var League = require('../models/League');
@@ -47,7 +48,7 @@ exports.get = function(req, res) {
 
 exports.update = function(req, res) {
 	var league = req.league;
-	league = _.assign(league, req.body);
+	league = assignDeep(league, req.body);
 
 	league.save(function(err) {
 		if (err) api.serverError(req, res, err);
