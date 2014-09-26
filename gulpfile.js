@@ -9,56 +9,81 @@ var gulp = require('gulp'),
 	concat = require('gulp-concat'),
 	notify = require('gulp-notify'),
 	cache = require('gulp-cache'),
-	livereload = require('gulp-livereload'),
 	del = require('del'),
 	plumber = require('gulp-plumber'),
 	traceur = require('gulp-traceur'),
 	inject = require("gulp-inject"),
 	bowerFiles = require('main-bower-files'),
 	runSequence = require('run-sequence'),
-	es = require('event-stream');
+	es = require('event-stream'),
+	livereload = require('gulp-livereload');
+
+var path = require('path');
 
 var paths = {
-	views: ['public/**/*.html'],
 	less: ['public/css/styles.less'],
-	es6: ['public/js/**/*.js'],
+	es6: ['app/**/*.js'],
 	scripts: [
-		'public/js/app.js',
-		'public/js/**/*.js'
-	]
+		'app/app.js',
+		'app/**/*.js'
+	],
+	views: ['app/**/*.html'],
+	dist: {
+		styles: ['!dist/bower/**/*.css', 'dist/**/*.css'],
+		js: ['!dist/bower/**/*.js', 'dist/**/*.js']
+	}
 };
+
+function extname (file) {
+	return path.extname(file).slice(1);
+}
+
+function transform(filepath, file, i, length) {
+	var filepath =  filepath.split('dist')[1];
+	switch(extname(filepath)) {
+		case 'css':
+			return '<link rel="stylesheet" href="' + filepath + '">';
+		case 'js':
+			return '<script src="' + filepath + '"></script>';
+	}
+}
+
 
 gulp.task('views', function() {
 	return gulp.src(paths.views)
 		.pipe(gulp.dest('dist/views'));
 });
 
-var scripts = function() {
-	return gulp.src(paths.scripts)
-		.pipe(traceur({experimental: true}))
-		.pipe(gulp.dest('dist/js'));
-};
-
 var bowerScripts = function() {
 	return gulp.src(bowerFiles({
 			filter: /.js/
 		}))
-		.pipe(concat('bower-files.js'))
-		.pipe(gulp.dest('dist/js'));
+		//.pipe(concat('bower-files.js'))
+		.pipe(gulp.dest('dist/bower'));
 };
 
+gulp.task('scripts', function() {
+	return gulp.src(paths.scripts)
+		.pipe(traceur())
+		.pipe(gulp.dest('dist/js'));
+});
 
-var styles = function() {
+gulp.task('styles', function() {
 	return gulp.src(paths.less)
 		.pipe(plumber())
 		.pipe(less())
 		.pipe(prefix('last 2 Chrome versions', 'last 2 iOS versions', 'last 2 Android versions'))
 		.pipe(gulp.dest('dist/css'));
-};
+});
+
+gulp.task('views', function() {
+	return gulp.src(paths.views)
+		.pipe(gulp.dest('dist'));
+});
 
 
 gulp.task('ngAnnotate', function() {
-	return gulp.src('dist/js/**/*.js')
+	return gulp.src('app/**/*.js')
 		.pipe(plumber())
 		.pipe(ngAnnotate({
 			remove: true,
@@ -71,12 +96,18 @@ gulp.task('ngAnnotate', function() {
 gulp.task('inject', function() {
 	return gulp.src('views/index.html')
 		.pipe(plumber())
-		.pipe(inject(es.merge(bowerScripts()), {name: 'bower'}))
-		.pipe(inject(es.merge(scripts(), styles())))
-		.pipe(gulp.dest("views"));
-
+		.pipe(inject(es.merge(bowerScripts()), {
+			name: 'bower',
+			transform: transform
+		}))
+		.pipe(inject(es.merge(
+			gulp.src(paths.dist.styles),
+			gulp.src(paths.dist.js)
+		), {
+			transform: transform
+		}))
+		.pipe(gulp.dest("dist"));
 });
-
 
 
 // Images
@@ -92,7 +123,22 @@ gulp.task('clean', function(cb) {
 	del(['dist'], cb)
 });
 
+gulp.task('watch', function() {
+	// Create LiveReload server
+	livereload.listen();
+
+	gulp.watch(['dist/index.html'], ['inject']);
+	gulp.watch(paths.dist.css, ['inject']);
+	gulp.watch(paths.dist.js, ['inject']);
+	gulp.watch(paths.less, ['styles']);
+	gulp.watch(paths.views, ['views']);
+	gulp.watch(paths.scripts, ['scripts']);
+
+	// Watch any files in dist/, reload on change
+	gulp.watch(['dist/**']).on('change', livereload.changed);
+});
 
 gulp.task('default', function(cb) {
-		runSequence('clean', ['inject'], cb);
+		runSequence('clean',['scripts', 'styles', 'views'], ['inject'], 'watch', cb);
 	});
+

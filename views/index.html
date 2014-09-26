@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="leagueApp">
 <head lang="en">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,20 +10,20 @@
   <!-- endinject -->
 
   <!-- inject:css -->
-  <link rel="stylesheet" href="/dist/css/styles.css">
   <!-- endinject -->
 </head>
 <body>
-<h1>Hello</h1>
+
+<div ng-controller="appController">
+  <div ui-view></div>
+</div>
+
 
 <!-- bower:js -->
-<script src="/dist/js/bower-files.js"></script>
 <!-- endinject -->
 
 <!-- inject:js -->
-<script src="/dist/js/main.js"></script>
-<script src="/dist/js/lib/bootstrap.min.js"></script>
-<script src="/dist/js/lib/jquery-2.1.1.min.js"></script>
 <!-- endinject -->
+
 </body>
 </html>

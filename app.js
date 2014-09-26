@@ -112,7 +112,9 @@ app.use(function(req, res, next) {
   req.session.returnTo = req.path;
   next();
 });
-app.use('/dist', express.static('dist'));
+
+app.use(express.static(path.join(__dirname, 'dist'), { maxAge: week }));
+
 
 /**
  * Main routes.
