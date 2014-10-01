@@ -46,7 +46,7 @@ passport.use(new BasicStrategy(function(email, password, done) {
 
 exports.isAuthenticated = function(req, res, next) {
   if (req.isAuthenticated()) return next();
-  res.redirect('/login');
+  api.unauthorized(req, res);
 };
 
 exports.isRestAuthenticated = passport.authenticate('basic', {session: true});

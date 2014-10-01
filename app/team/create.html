@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <form class="form-horizontal" ng-submit="">
+        <fieldset>
+          <legend>Login</legend>
+          <div class="form-group">
+            <label for="teamName" class="col-lg-2 control-label">Team Name</label>
+
+            <div class="col-lg-10">
+              <input ng-model="createTeam.team.name" type="text" class="form-control" id="teamName" placeholder="Team Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="teamLeague" class="col-lg-2 control-label">League</label>
+
+            <div class="col-lg-10">
+              <select ng-model="createTeam.team.league"
+                      ng-options="league._id as league.name for league in createTeam.leagues"
+                      class="form-control" id="teamLeague"></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+              <button ng-click="createTeam.create()" type="submit" class="btn btn-success">Create</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>

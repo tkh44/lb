@@ -26,7 +26,7 @@ exports.create = function(req, res) {
 		if (err) return api.serverError(req, res, err);
 		var team = {
 			name: req.body.name,
-			manager: req.user
+			manager: req.user._id
 		};
 
 		Team.create(team, function(err, team) {

@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <h4>Your Leagues</h4>
+      <div class="list-group">
+        <div class="list-group-item" ng-repeat="league in dash.leagues">
+          {{ league.name }}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <h4>Your Teams</h4>
+      <div class="list-group">
+        <div class="list-group-item" ng-repeat="team in dash.teams">
+          {{ team.name }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="navbar navbar-default navbar-fixed-top" ng-controller="headerCtrl as header">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/" class="navbar-brand">
+        <span class="ion-cube"></span>League Builder</a>
+    </div>
+    <div class="collapse navbar-collapse" ng-if="header.authenticated">
+      <ul class="nav navbar-nav">
+        <li class="active"><a ng-click="go('dashboard')">Home</a>
+        </li>
+        <li><a ng-click="go('createTeam')">Create Team</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+            <img src="" ng-src="{{header.user.profile.picture.thumbnail}}">{{ header.user.profile.name.first }} {{ header.user.profile.name.last }}&nbsp;<i class="caret"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="/account">
+                <span class="ion-person"></span>My Account</a>
+            </li>
+            <li class="divider"></li>
+            <li>
+              <a href="/logout">
+                <span class="ion-log-out"></span>Logout</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

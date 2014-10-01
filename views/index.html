@@ -12,12 +12,9 @@
   <!-- inject:css -->
   <!-- endinject -->
 </head>
-<body>
-
-<div ng-controller="appController">
-  <div ui-view></div>
-</div>
-
+<body ng-controller="appController">
+<header ng-include="'header/header.html'"></header>
+<div class="main" ui-view></div>
 
 <!-- bower:js -->
 <!-- endinject -->

@@ -37,6 +37,9 @@ var contactController = require('./controllers/contact');
 var secrets = require('./config/secrets');
 var passportConf = require('./config/passport');
 
+var expressJwt = require('express-jwt');
+var jwt = require('jsonwebtoken');
+
 /**
  * Create Express server.
  */
@@ -92,7 +95,14 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(flash());
+
+
+
+//app.use(express.json());
+//app.use(express.urlencoded());
+
+
+
 //app.use(function(req, res, next) {
 //  // CSRF protection.
 //  if (_.contains(csrfExclude, req.path)|| ~req.path.search('/api/')) return next();
@@ -103,43 +113,35 @@ app.use(flash());
 //  res.locals.user = req.user;
 //  next();
 //});
-app.use(function(req, res, next) {
-  // Remember original destination before login.
-  var path = req.path.split('/')[1];
-  if (/auth|login|logout|signup|fonts|favicon/i.test(path)) {
-    return next();
-  }
-  req.session.returnTo = req.path;
-  next();
-});
+//app.use(function(req, res, next) {
+//  // Remember original destination before login.
+//  var path = req.path.split('/')[1];
+//  if (/auth|login|logout|signup|fonts|favicon/i.test(path)) {
+//    return next();
+//  }
+//  req.session.returnTo = req.path;
+//  next();
+//});
 
-app.use(express.static(path.join(__dirname, 'dist'), { maxAge: week }));
+app.use(express.static(path.join(__dirname, 'dist')));
 
+
+
+//app.use('/api', passportConf.isAuthenticated);
 
 /**
  * Main routes.
  */
 
 app.get('/', homeController.index);
-app.get('/login', userController.getLogin);
-app.post('/login', userController.postLogin);
-app.get('/logout', userController.logout);
-app.get('/forgot', userController.getForgot);
-app.post('/forgot', userController.postForgot);
-app.get('/reset/:token', userController.getReset);
-app.post('/reset/:token', userController.postReset);
-app.get('/signup', userController.getSignup);
-app.post('/signup', userController.postSignup);
-//app.get('/contact', contactController.getContact);
-//app.post('/contact', contactController.postContact);
-app.get('/account', passportConf.isAuthenticated, userController.getAccount);
-app.post('/account/profile', passportConf.isAuthenticated, userController.postUpdateProfile);
-app.post('/account/password', passportConf.isAuthenticated, userController.postUpdatePassword);
-app.post('/account/delete', passportConf.isAuthenticated, userController.postDeleteAccount);
-app.get('/account/unlink/:provider', passportConf.isAuthenticated, userController.getOauthUnlink);
 
+var sessionController = require('./controllers/session');
+app.route('/auth')
+	.post(sessionController.login)
+	.delete(sessionController.logout);
 
-app.use('/api', passportConf.isRestAuthenticated);
+/** API **/
+app.use('/api', expressJwt({secret: secrets.jwtSecret}));
 
 app.route('/api/v1/users/me')
 	.get(userController.me);

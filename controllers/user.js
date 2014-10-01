@@ -400,6 +400,7 @@ exports.me = function(req, res) {
 	api.ok(req, res, req.user);
 };
 
+
 exports.all = function(req, res) {
 	User
 		.find()

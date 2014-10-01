@@ -16,12 +16,14 @@ var gulp = require('gulp'),
 	bowerFiles = require('main-bower-files'),
 	runSequence = require('run-sequence'),
 	es = require('event-stream'),
-	livereload = require('gulp-livereload');
+	livereload = require('gulp-livereload'),
+	sourcemaps = require('gulp-sourcemaps');
 
 var path = require('path');
 
 var paths = {
 	less: ['public/css/styles.less'],
+	fonts: ['public/fonts/**'],
 	es6: ['app/**/*.js'],
 	scripts: [
 		'app/app.js',
@@ -54,6 +56,11 @@ gulp.task('views', function() {
 		.pipe(gulp.dest('dist/views'));
 });
 
+gulp.task('fonts', function() {
+	return gulp.src(paths.fonts)
+		.pipe(gulp.dest('dist/fonts'));
+});
+
 var bowerScripts = function() {
 	return gulp.src(bowerFiles({
 			filter: /.js/
@@ -64,8 +71,11 @@ var bowerScripts = function() {
 
 gulp.task('scripts', function() {
 	return gulp.src(paths.scripts)
-		.pipe(traceur())
-		.pipe(gulp.dest('dist/js'));
+		.pipe(sourcemaps.init())
+		.pipe(concat('all.js'))
+		.pipe(traceur({experimental: true}))
+		.pipe(sourcemaps.write('dist/maps'))
+		.pipe(gulp.dest('dist'));
 });
 
 gulp.task('styles', function() {
@@ -115,7 +125,7 @@ gulp.task('images', function() {
 	return gulp.src('public/images/**/*')
 		.pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
 		.pipe(gulp.dest('dist/images'))
-		.pipe(notify({ message: 'Images task complete' }));
+		//.pipe(notify({ message: 'Images task complete' }));
 });
 
 // Clean
@@ -125,11 +135,11 @@ gulp.task('clean', function(cb) {
 
 gulp.task('watch', function() {
 	// Create LiveReload server
-	livereload.listen();
+	//livereload.listen();
 
-	gulp.watch(['dist/index.html'], ['inject']);
-	gulp.watch(paths.dist.css, ['inject']);
-	gulp.watch(paths.dist.js, ['inject']);
+	//gulp.watch(['dist/index.html'], ['inject']);
+	//gulp.watch(paths.dist.css, ['inject']);
+	//gulp.watch(paths.dist.js, ['inject']);
 	gulp.watch(paths.less, ['styles']);
 	gulp.watch(paths.views, ['views']);
 	gulp.watch(paths.scripts, ['scripts']);
@@ -139,6 +149,6 @@ gulp.task('watch', function() {
 });
 
 gulp.task('default', function(cb) {
-		runSequence('clean',['scripts', 'styles', 'views'], ['inject'], 'watch', cb);
+		runSequence('clean',['scripts', 'styles', 'views', 'fonts', 'images'], ['inject'], 'watch', cb);
 	});
 
