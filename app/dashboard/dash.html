@@ -9,12 +9,8 @@
       </div>
     </div>
     <div class="col-md-4">
-      <h4>Your Teams</h4>
-      <div class="list-group">
-        <div class="list-group-item" ng-repeat="team in dash.teams">
-          {{ team.name }}
-        </div>
-      </div>
+      <h4 ng-click="go('teams')">Your Teams</h4>
+      <team-list></team-list>
     </div>
   </div>
 </div>

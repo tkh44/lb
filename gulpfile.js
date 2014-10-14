@@ -11,7 +11,7 @@ var gulp = require('gulp'),
 	cache = require('gulp-cache'),
 	del = require('del'),
 	plumber = require('gulp-plumber'),
-	traceur = require('gulp-traceur'),
+	to5 = require('gulp-6to5'),
 	inject = require("gulp-inject"),
 	bowerFiles = require('main-bower-files'),
 	runSequence = require('run-sequence'),
@@ -71,10 +71,11 @@ var bowerScripts = function() {
 
 gulp.task('scripts', function() {
 	return gulp.src(paths.scripts)
+		.pipe(plumber())
 		.pipe(sourcemaps.init())
+		.pipe(to5())
 		.pipe(concat('all.js'))
-		.pipe(traceur({experimental: true}))
-		.pipe(sourcemaps.write('dist/maps'))
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('dist'));
 });
 
@@ -135,7 +136,7 @@ gulp.task('clean', function(cb) {
 
 gulp.task('watch', function() {
 	// Create LiveReload server
-	//livereload.listen();
+	livereload.listen();
 
 	//gulp.watch(['dist/index.html'], ['inject']);
 	//gulp.watch(paths.dist.css, ['inject']);

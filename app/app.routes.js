@@ -28,22 +28,46 @@ angular.module('leagueApp').config(function($stateProvider, $urlRouterProvider) 
 			resolve: {
 				leagues: function(Rest) {
 					return Rest.leagues.getList();
-				},
-				teams: function(Rest) {
-					return Rest.teams.getList();
 				}
 			}
 		});
 
-	$stateProvider.state('createTeam', {
-		url: '/create-team',
-		templateUrl: 'team/create.html',
-		controller: 'createTeamCtrl as createTeam',
-		resolve: {
-			leagues: function(Rest) {
-				return Rest.leagues.getList();
+
+	$stateProvider
+		.state('teams', {
+			abstract: true,
+			url: '/teams',
+			templateUrl: 'team/team-main.html'
+		})
+		.state('teams.list', {
+			url: '',
+			templateUrl: 'team/team-list.html',
+			controller: 'TeamListCtrl as teams',
+			resolve: {
+				teams: (Rest) => {
+					return Rest.teams.getList();
+				}
 			}
-		}
-	})
+		})
+		.state('teams.create', {
+			url: '/create',
+			templateUrl: 'team/create-team.html',
+			controller: 'CreateTeamCtrl as create',
+			resolve: {
+				leagues: function(Rest) {
+					return Rest.leagues.getList();
+				}
+			}
+		})
+		.state('teams.details', {
+			url: '/details/:teamId',
+			templateUrl: 'team/team-details.html',
+			controller: 'TeamDetailsCtrl as details',
+			resolve: {
+				team: (Rest, $stateParams) => {
+					return Rest.teams.one($stateParams.teamId).get();
+				}
+			}
+		})
 });
 

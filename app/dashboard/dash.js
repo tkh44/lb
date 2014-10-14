@@ -1,7 +1,6 @@
 class Dash {
-	constructor($scope, Rest, leagues, teams) {
+	constructor($scope, Rest, leagues) {
 		this.leagues = leagues;
-		this.teams = teams;
 	}
 }
 

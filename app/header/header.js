@@ -6,14 +6,14 @@ class Header {
 
 		if (this.user) {
 			this.authenticated = true;
+		} else {
+			UserAuth.getUser().then((res) => {
+				this.authenticated = true;
+				this.user = res;
+			}, (err) => {
+				this.authenticated = false;
+			});
 		}
-
-		UserAuth.getUser().then((res) => {
-			this.authenticated = true;
-			this.user = res;
-		}, (err) => {
-			this.authenticated = false;
-		});
 	}
 }
 
