@@ -13,7 +13,7 @@ var csrf = require('lusca').csrf();
 var methodOverride = require('method-override');
 
 var _ = require('lodash');
-var MongoStore = require('connect-mongo')({ session: session });
+var MongoStore = require('connect-mongo')({session: session});
 var flash = require('express-flash');
 var path = require('path');
 var mongoose = require('mongoose');
@@ -80,7 +80,7 @@ app.use(compress());
 //}));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressValidator());
 app.use(methodOverride());
 app.use(cookieParser());
@@ -97,10 +97,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-
 //app.use(express.json());
 //app.use(express.urlencoded());
-
 
 
 //app.use(function(req, res, next) {
@@ -126,7 +124,6 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'dist')));
 
 
-
 //app.use('/api', passportConf.isAuthenticated);
 
 /**
@@ -137,39 +134,39 @@ app.get('/', homeController.index);
 
 var sessionController = require('./controllers/session');
 app.route('/auth')
-	.post(sessionController.login)
-	.delete(sessionController.logout);
+  .post(sessionController.login)
+  .delete(sessionController.logout);
 
 /** API **/
 app.use('/api', expressJwt({secret: secrets.jwtSecret}));
 
 app.route('/api/v1/users/me')
-	.get(userController.me);
+  .get(userController.me);
 app.route('/api/v1/users')
-	.get(userController.all)
-	.post(userController.create);
+  .get(userController.all)
+  .post(userController.create);
 app.route('/api/v1/users/:userId')
-	.get(userController.get)
-	.put(userController.update);
+  .get(userController.get)
+  .put(userController.update);
 // .delete(userController.destroy);
 
 var leagueController = require('./controllers/league');
 
 app.route('/api/v1/leagues')
-	.get(leagueController.all)
-	.post(leagueController.create);
+  .get(leagueController.all)
+  .post(leagueController.create);
 app.route('/api/v1/leagues/:leagueId')
-	.get(leagueController.get)
-	.put(leagueController.update)
-	.delete(leagueController.destroy);
+  .get(leagueController.get)
+  .put(leagueController.update)
+  .delete(leagueController.destroy);
 app.route('/api/v1/leagues/:leagueId/teams/:leagueTeamId')
-	.put(leagueController.addTeam)
-	.delete(leagueController.destroyTeam);
+  .put(leagueController.addTeam)
+  .delete(leagueController.destroyTeam);
 
 var teamController = require('./controllers/team');
 
 app.route('/api/v1/teams')
-	.get(teamController.all)
+  .get(teamController.all)
   .post(teamController.create);
 app.route('/api/v1/teams/:teamId')
   .get(teamController.get)
@@ -182,25 +179,25 @@ app.route('/api/v1/teams/:teamId/players/:teamPlayerId')
 var playerController = require('./controllers/player');
 
 app.route('/api/v1/players')
-	.get(playerController.all)
+  .get(playerController.all)
   .post(playerController.create);
 app.route('/api/v1/players/:playerId')
-	.get(playerController.get)
+  .get(playerController.get)
   .put(playerController.update)
   .delete(playerController.destroy);
 
 var gameController = require('./controllers/game');
 
 app.route('/api/v1/games')
-	.get(gameController.all)
-	.post(gameController.create)
+  .get(gameController.all)
+  .post(gameController.create)
 app.route('/api/v1/games/:gameId')
-	.get(gameController.get)
-	.put(gameController.update)
-	.delete(gameController.destroy);
+  .get(gameController.get)
+  .put(gameController.update)
+  .delete(gameController.destroy);
 app.route('/api/v1/games/:gameId/teams/:teamId')
-	.put(gameController.addTeam)
-	.delete(gameController.destroyTeam);
+  .put(gameController.addTeam)
+  .delete(gameController.destroyTeam);
 
 app.param('userId', userController.user);
 app.param('leagueId', leagueController.league);

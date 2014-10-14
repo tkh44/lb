@@ -17,14 +17,14 @@ passport.deserializeUser(function(id, done) {
 });
 
 // Sign in using Email and Password.
-passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, password, done) {
-  User.findOne({ email: email }, function(err, user) {
-    if (!user) return done(null, false, { message: 'Email ' + email + ' not found'});
+passport.use(new LocalStrategy({usernameField: 'email'}, function(email, password, done) {
+  User.findOne({email: email}, function(err, user) {
+    if (!user) return done(null, false, {message: 'Email ' + email + ' not found'});
     user.comparePassword(password, function(err, isMatch) {
       if (isMatch) {
         return done(null, user);
       } else {
-        return done(null, false, { message: 'Invalid email or password.' });
+        return done(null, false, {message: 'Invalid email or password.'});
       }
     });
   });
@@ -32,14 +32,14 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, passw
 
 // Sign in with basic HTTP auth
 passport.use(new BasicStrategy(function(email, password, done) {
-	User.findOne({email: email}, function(err, user) {
-		if (!user) return done(null, false, {message: 'Unauthorized'});
-		user.comparePassword(password, function(err, isMatch) {
-			return isMatch ?
-				done(null, user) :
-				done(null, false, {message: 'Unauthorized'});
-		})
-	});
+  User.findOne({email: email}, function(err, user) {
+    if (!user) return done(null, false, {message: 'Unauthorized'});
+    user.comparePassword(password, function(err, isMatch) {
+      return isMatch ?
+        done(null, user) :
+        done(null, false, {message: 'Unauthorized'});
+    })
+  });
 }));
 
 // Login Required middleware.
@@ -56,7 +56,7 @@ exports.isRestAuthenticated = passport.authenticate('basic', {session: true});
 exports.isAuthorized = function(req, res, next) {
   var provider = req.path.split('/').slice(-1)[0];
 
-  if (_.find(req.user.tokens, { kind: provider })) {
+  if (_.find(req.user.tokens, {kind: provider})) {
     next();
   } else {
     res.redirect('/auth/' + provider);

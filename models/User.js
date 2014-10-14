@@ -4,7 +4,7 @@ var crypto = require('crypto');
 var _ = require('lodash');
 
 var userSchema = new mongoose.Schema({
-  email: { type: String, unique: true, lowercase: true },
+  email: {type: String, unique: true, lowercase: true},
   password: String,
 
   facebook: String,
@@ -17,21 +17,21 @@ var userSchema = new mongoose.Schema({
 
   profile: {
     name: {
-	    title: {type: String, default: ''},
-	    first: {type: String, default: ''},
-	    last: {type: String, default: ''}
+      title: {type: String, default: ''},
+      first: {type: String, default: ''},
+      last: {type: String, default: ''}
     },
     location: {
-	    street: {type: String, default: ''},
-	    city: {type: String, default: ''},
-	    state: {type: String, default: ''},
-	    zip: {type: String, default: ''}
+      street: {type: String, default: ''},
+      city: {type: String, default: ''},
+      state: {type: String, default: ''},
+      zip: {type: String, default: ''}
     },
-    gender: { type: String, default: '' },
+    gender: {type: String, default: ''},
     picture: {
-	    large: { type: String, default: '' },
-	    medium: { type: String, default: '' },
-	    thumbnail: { type: String, default: '' }
+      large: {type: String, default: ''},
+      medium: {type: String, default: ''},
+      thumbnail: {type: String, default: ''}
     }
   },
 
@@ -61,7 +61,7 @@ userSchema.pre('save', function(next) {
 });
 
 userSchema.virtual('profile.name.full').get(function() {
-	return this.profile.name.first + ' ' + this.profile.name.last;
+  return this.profile.name.first + ' ' + this.profile.name.last;
 });
 
 /**
@@ -93,15 +93,15 @@ userSchema.methods.gravatar = function(size) {
 };
 
 userSchema.statics.load = function(id, cb) {
-	this.findOne({
-		_id: id
-	}).exec(cb);
+  this.findOne({
+    _id: id
+  }).exec(cb);
 };
 
 userSchema.set('toJSON', {
-	transform: function(doc, user, options) {
-		return _.omit(user, ['password', 'tokens']);
-	}
+  transform: function(doc, user, options) {
+    return _.omit(user, ['password', 'tokens']);
+  }
 });
 
 module.exports = mongoose.model('User', userSchema);

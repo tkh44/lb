@@ -6,38 +6,38 @@ var _ = require('lodash');
 
 
 var getUserData = function(userId, cb) {
-	async.parallel({
-		leagues: function(cb) {
-			League.getByManager(userId, cb);
-		},
-		teams: function(cb) {
-			Team.getByManager(userId, cb);
-		},
-		players: function(cb) {
-			Player.getByUser(userId, cb);
-		}
-	}, cb);
+  async.parallel({
+    leagues: function(cb) {
+      League.getByManager(userId, cb);
+    },
+    teams: function(cb) {
+      Team.getByManager(userId, cb);
+    },
+    players: function(cb) {
+      Player.getByUser(userId, cb);
+    }
+  }, cb);
 };
 
 exports.index = function(req, res) {
-	res.render('index');
+  res.render('index');
 
-	//var responseData = {
-	//	title: 'Home'
-	//};
-	//
-	//if (req.user) {
-	//	getUserData(req.user.id, function(err, results) {
-	//		if (err) return err;
-	//		res.render('index', _.assign(responseData, {
-	//			leagues: results.leagues,
-	//			teams: results.teams,
-	//			players: results.players
-	//		}));
-	//	});
-	//} else {
-	//	res.render('index', responseData);
-	//}
+  //var responseData = {
+  //	title: 'Home'
+  //};
+  //
+  //if (req.user) {
+  //	getUserData(req.user.id, function(err, results) {
+  //		if (err) return err;
+  //		res.render('index', _.assign(responseData, {
+  //			leagues: results.leagues,
+  //			teams: results.teams,
+  //			players: results.players
+  //		}));
+  //	});
+  //} else {
+  //	res.render('index', responseData);
+  //}
 
 
 };
